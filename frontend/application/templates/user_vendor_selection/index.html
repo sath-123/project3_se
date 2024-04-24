@@ -1,0 +1,25 @@
+{% extends "base_col_3.html" %}
+{% block title %}Home Page{% endblock %}
+
+{% block pageContent %}
+
+
+{% set url1 = "/login_user" %}
+{% set url2 = "/login_vendor" %}
+
+
+<div class="col-md-4">
+    <div class="panel panel-default">
+        <div class="panel-footer">
+            <div class="container">
+                <a class="btn btn-success" href="{{ url1 }}">Buyer</a>
+                <a class="btn btn-success" href="{{ url2 }}">Vendor</a>
+
+            </div>
+        </div>
+    </div>
+</div>
+
+
+
+{% endblock %}
