@@ -1,0 +1,38 @@
+# docker-compose.yml
+version: '3.8'
+
+volumes:
+  vendordb_vol:
+
+networks:
+  micro_network:
+    external:
+      name: micro_network
+
+services:
+  vendor-api:
+    container_name: cvendor-service
+    build:
+      context: .
+    ports:
+    - "5004:5004"
+    depends_on:
+      - vendor-db
+    networks:
+      - micro_network
+    restart: always
+
+  vendor-db:
+    container_name: cvendor_dbase
+    image: mysql:8
+    ports:
+    - "32003:3306"
+    environment:
+      MYSQL_ROOT_PASSWORD: pfm_dc_2020
+      MYSQL_DATABASE: vendor
+      MYSQL_USER: cloudacademy
+      MYSQL_PASSWORD: pfm_2020
+    networks:
+      - micro_network
+    volumes:
+    - vendordb_vol:/var/lib/mysql
