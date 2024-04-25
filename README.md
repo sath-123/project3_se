@@ -1,6 +1,6 @@
 # project3_se
 
-Instructions to run:
+## Instructions to Run:
 
 docker network create micro_network
 
