@@ -21,7 +21,7 @@ done
 http://localhost:5000/register
 
 
-## Microservices Teardown
+## Teardown of Microservices
 1. Perform the following steps to teardown the microservices environment:
 
 for container in cuser-service cproduct-service corder-service cproduct_dbase cfrontend-app cuser_dbase corder_dbase;
