@@ -19,15 +19,20 @@ def load_user(user_id):
 
 @frontend_blueprint.route('/home_user', methods=['GET'])
 def home_user():
+    vendor_id = request.args.get('vendor_id', None, type=int)
+    min_price = request.args.get('min_price', None, type=float)
+    max_price = request.args.get('max_price', None, type=float)
     if current_user.is_authenticated:
         session['order'] = OrderClient.get_order_from_session()
+
     try:
-        products = ProductClient.get_products()
+        products = ProductClient.get_products(vendor_id=vendor_id, min_price=min_price, max_price=max_price)
     except requests.exceptions.ConnectionError:
         products = {'results': []}
+
     return render_template('home_user/index.html', products=products)
 
-@frontend_blueprint.route('/home_vendor', methods=['GET'])
+@frontend_blueprint.route('/home_vendor', methods=['GET','POST'])
 def home_vendor():
     if current_user.is_authenticated:
         session['order'] = OrderClient.get_order_from_session()
@@ -73,7 +78,7 @@ def register_vendor():
                 return redirect(url_for('frontend.login_vendor'))
     else:
         flash('Errors found', 'error')
-    return render_template('register/index.html', form=form)
+    return render_template('register/index_vendor.html', form=form)
 
 @frontend_blueprint.route('/login_user', methods=['GET', 'POST'])
 def login_user():
@@ -114,17 +119,24 @@ def login_vendor():
             flash('Cannot login', 'error')
     else:
         flash('Errors found', 'error')
-    return render_template('login/index.html', form=form)
+    return render_template('login/index_vendor.html', form=form)
 
 @frontend_blueprint.route('/logout', methods=['GET'])
 def logout():
     session.clear()
     return render_template('user_vendor_selection/index.html')
 
-@frontend_blueprint.route('/add', methods=['GET'])
+@frontend_blueprint.route('/add', methods=['POST','GET'])
 def add():
     form = forms.AddProductForm()
-    return render_template('login/index.html')
+    if request.method == "POST" and form.validate_on_submit():
+        product = ProductClient.create_product(form, session['user']['id'])
+        if product:
+            flash('Product added successfully', 'success')
+            return redirect(url_for('frontend.home_vendor'))
+        else:
+            flash('Failed to add product', 'error')
+    return render_template('add/index.html', form=form)
 
 @frontend_blueprint.route('/product/<slug>', methods=['GET', 'POST'])
 def product(slug):

@@ -5,6 +5,7 @@ from application import models
 
 app = create_app()
 # migrate = Migrate(app, db)
+from flask import jsonify
 
 from flask import g
 from flask.sessions import SecureCookieSessionInterface
@@ -29,5 +30,8 @@ def user_loaded_from_header(self, user=None):
     g.login_via_header = True
 
 
+@app.route("/health", methods=["GET"])
+def health_check():
+    return jsonify({"status": "OK"}), 200
 if __name__ == '__main__':
     app.run(host='0.0.0.0', port=5004)

@@ -4,10 +4,12 @@ import os
 from flask import Flask
 from flask_bootstrap import Bootstrap
 from flask_login import LoginManager
+from flask_caching import Cache
 
 login_manager = LoginManager()
 bootstrap = Bootstrap()
 UPLOAD_FOLDER = 'application/static/images'
+cache = Cache()
 
 
 def create_app():
@@ -22,6 +24,7 @@ def create_app():
     login_manager.login_view = "frontend.login"
 
     bootstrap.init_app(app)
+    cache.init_app(app, config={'CACHE_TYPE': 'simple'})
 
     with app.app_context():
         from .frontend import frontend_blueprint

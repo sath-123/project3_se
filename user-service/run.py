@@ -2,7 +2,7 @@
 from application import create_app, db
 from application import models
 # from flask_migrate import Migrate
-
+from flask import jsonify
 app = create_app()
 # migrate = Migrate(app, db)
 
@@ -28,6 +28,9 @@ app.session_interface = CustomSessionInterface()
 def user_loaded_from_header(self, user=None):
     g.login_via_header = True
 
+@app.route("/health", methods=["GET"])
+def health_check():
+    return jsonify({"status": "OK"}), 200
 
 if __name__ == '__main__':
     app.run(host='0.0.0.0', port=5001)
