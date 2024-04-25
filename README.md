@@ -4,7 +4,7 @@
 
 docker network create micro_network
 
-## In every micro-services run
+# In every micro-services run
 docker-compose -f docker-compose.yml build
 docker images
 
