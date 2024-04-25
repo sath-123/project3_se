@@ -4,14 +4,24 @@ from .. import db
 from ..models import Product
 from flask import jsonify, request
 import sys
+from . import product_filters
 
 
 @product_api_blueprint.route('/api/products', methods=['GET'])
 def products():
-    items = []
-    for row in Product.query.all():
-        items.append(row.to_json())
-
+    vendor_id = request.args.get('vendor_id', type=int)
+    min_price = request.args.get('min_price', type=float)
+    max_price = request.args.get('max_price', type=float)
+    
+    filter_strategy = product_filters.ProductFilterFactory.create_filter(
+        'vendor_price_range', vendor_id=vendor_id, min_price=min_price, max_price=max_price
+    )
+    
+    # Apply filter
+    query = filter_strategy.apply(Product.query)
+    
+    items = [row.to_json() for row in query.all()]
+    
     response = jsonify({'results': items})
     return response
 
@@ -19,9 +29,9 @@ def products():
 @product_api_blueprint.route('/api/product/create', methods=['POST'])
 def post_create():
 
-    print(request.form, file=sys.stderr)
+    print(request.form['name'], file=sys.stderr)
 
-    id = request.form['id']
+    
     name = request.form['name']
     slug = request.form['slug']
     image = request.form['image']
@@ -34,7 +44,7 @@ def post_create():
     item.image = image
     item.price = price
     item.vendor_id = vendor_id
-    item.id = id
+    # item.id = id
 
 
     db.session.add(item)

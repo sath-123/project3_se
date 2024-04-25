@@ -2,7 +2,18 @@
 {% block title %}Home Page{% endblock %}
 
 {% block pageContent %}
+{% set url = "/add" %}
 
 <h1>Home Vendor</h1>
 
+<div class="col-md-4">
+    <div class="panel panel-default">
+        <div class="panel-footer">
+            <div class="container">
+                <a class="btn btn-success" href="{{ url }}">Add</a>
+
+            </div>
+        </div>
+    </div>
+</div>
 {% endblock %}
